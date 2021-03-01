@@ -1,119 +1,219 @@
 #include "dialog.h"
 #include "ui_dialog.h"
-#include <QHBoxLayout>
-#include <QFormLayout>
+#include <QLabel>
 #include <QComboBox>
-#include <QSpinBox>
+#include <QGridLayout>
 
 Dialog::Dialog(QWidget *parent)
-    : QDialog(parent)
+    : QWidget(parent)
 {
-    createMenu();
-    createHorizontalGroupBox();
-    createGridGroupBox();
-    createFormGroupBox();
+    QGroupBox *echoGroup = new QGroupBox(tr("Echo"));
 
-    bigEditor = new QTextEdit;
-    bigEditor->setPlainText(tr("Another cool widget"));
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    QLabel *echoLabel = new QLabel(tr("Mode:"));
+    QComboBox *echoComboBox = new QComboBox;
+    echoComboBox->addItem(tr("Normal"));
+    echoComboBox->addItem(tr("Passwd"));
+    echoComboBox->addItem(tr("Other"));
+    echoComboBox->addItem(tr("no echo"));
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    echoLineEdit = new QLineEdit;
+    echoLineEdit->setPlaceholderText("Placeholder txt");
+    echoLineEdit->setFocus();
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setMenuBar(menuBar);
-    mainLayout->addWidget(horizontalGroupBox);
-    mainLayout->addWidget(gridGroupBox);
-    mainLayout->addWidget(formGroupBox);
-    mainLayout->addWidget(bigEditor);
-    mainLayout->addWidget(buttonBox);
 
-    setLayout(mainLayout);
-    setWindowTitle(tr("Basic Layoutss"));
-}
 
-void Dialog::createMenu()
-{
-    menuBar = new QMenuBar;
+    QGroupBox *validatorGroup = new QGroupBox(tr("Validator"));
+    QLabel *validatorLabel = new QLabel(tr("type:"));
+    QComboBox *validatorComboBox = new QComboBox;
+    validatorComboBox->addItem(tr("No validator"));
+    validatorComboBox->addItem(tr("Integer validator"));
+    validatorComboBox->addItem(tr("Double validator"));
 
-    fileMenu = new QMenu(tr("&File"), this);
-    exitAction = fileMenu->addAction(tr("E&xit"));
-    menuBar->addMenu(fileMenu);
+    validatorLineEdit = new QLineEdit;
+    validatorLineEdit->setPlaceholderText("Placeholder Text");
 
-    connect(exitAction, &QAction::triggered, this, &QDialog::accept);
-}
 
-void Dialog::createHorizontalGroupBox()
-{
-    horizontalGroupBox = new QGroupBox(tr("Horizontal Layout"));
-    QHBoxLayout *layout = new QHBoxLayout;
+    QGroupBox *alignmentGroup = new QGroupBox(tr("Alignment"));
 
-    for(int i=0; i<NumButtons; ++i)
-    {
-        buttons[i] = new QPushButton(tr("Button %1").arg(i+1));
-        layout->addWidget(buttons[i]);
-    }
-    horizontalGroupBox->setLayout(layout);
-}
+    QLabel *alignmentLabel = new QLabel(tr("Type:"));
+    QComboBox *alignmentComboBox = new QComboBox;
+    alignmentComboBox->addItem(tr("Left"));
+    alignmentComboBox->addItem(tr("Centered"));
+    alignmentComboBox->addItem(tr("Right"));
 
-void Dialog::createGridGroupBox()
-{
-    gridGroupBox = new QGroupBox(tr("Grid layout"));
+    alignmentLineEdit = new QLineEdit;
+    alignmentLineEdit->setPlaceholderText("Placeholder Text");
+
+
+
+    QGroupBox *inputMaskGroup = new QGroupBox(tr("Input mask"));
+
+    QLabel *inputMaskLabel = new QLabel(tr("Type:"));
+    QComboBox *inputMaskComboBox = new QComboBox;
+    inputMaskComboBox->addItem(tr("No mask"));
+    inputMaskComboBox->addItem(tr("Phone number"));
+    inputMaskComboBox->addItem(tr("ISO date"));
+    inputMaskComboBox->addItem(tr("License key"));
+
+    inputMaskLineEdit = new QLineEdit;
+    inputMaskLineEdit->setPlaceholderText("Placeholder Text");
+
+
+
+    QGroupBox *accessGroup = new QGroupBox(tr("Access"));
+
+    QLabel *accessLabel = new QLabel(tr("Read-only:"));
+    QComboBox *accessComboBox = new QComboBox;
+    accessComboBox->addItem(tr("False"));
+    accessComboBox->addItem(tr("True"));
+
+    accessLineEdit = new QLineEdit;
+    accessLineEdit->setPlaceholderText("Placeholder Text");
+
+
+    connect(echoComboBox, QOverload<int>::of(&QComboBox::activated),
+               this, &Dialog::echoChanged);
+    connect(validatorComboBox, QOverload<int>::of(&QComboBox::activated),
+               this, &Dialog::validatorChanged);
+    connect(alignmentComboBox, QOverload<int>::of(&QComboBox::activated),
+               this, &Dialog::alignmentChanged);
+    connect(inputMaskComboBox, QOverload<int>::of(&QComboBox::activated),
+               this, &Dialog::inputMaskChanged);
+    connect(accessComboBox, QOverload<int>::of(&QComboBox::activated),
+               this, &Dialog::accessChanged);
+
+
+    QGridLayout *echoLayout = new QGridLayout;
+    echoLayout->addWidget(echoLabel, 0, 0);
+    echoLayout->addWidget(echoComboBox, 0, 1);
+    echoLayout->addWidget(echoLineEdit, 1, 0, 1, 2);
+    echoGroup->setLayout(echoLayout);
+
+
+    QGridLayout *validatorLayout = new QGridLayout;
+    validatorLayout->addWidget(validatorLabel, 0, 0);
+    validatorLayout->addWidget(validatorComboBox, 0, 1);
+    validatorLayout->addWidget(validatorLineEdit, 1, 0, 1, 2);
+    validatorGroup->setLayout(validatorLayout);
+
+    QGridLayout *alignmentLayout = new QGridLayout;
+    alignmentLayout->addWidget(alignmentLabel, 0, 0);
+    alignmentLayout->addWidget(alignmentComboBox, 0, 1);
+    alignmentLayout->addWidget(alignmentLineEdit, 1, 0, 1, 2);
+    alignmentGroup-> setLayout(alignmentLayout);
+
+    QGridLayout *inputMaskLayout = new QGridLayout;
+    inputMaskLayout->addWidget(inputMaskLabel, 0, 0);
+    inputMaskLayout->addWidget(inputMaskComboBox, 0, 1);
+    inputMaskLayout->addWidget(inputMaskLineEdit, 1, 0, 1, 2);
+    inputMaskGroup->setLayout(inputMaskLayout);
+
+    QGridLayout *accessLayout = new QGridLayout;
+    accessLayout->addWidget(accessLabel, 0, 0);
+    accessLayout->addWidget(accessComboBox, 0, 1);
+    accessLayout->addWidget(accessLineEdit, 1, 0, 1, 2);
+    accessGroup->setLayout(accessLayout);
+
     QGridLayout *layout = new QGridLayout;
+    layout->addWidget(echoGroup, 0, 0);
+    layout->addWidget(validatorGroup, 1, 0);
+    layout->addWidget(alignmentGroup, 2, 0);
+    layout->addWidget(inputMaskGroup, 0, 1);
+    layout->addWidget(accessGroup, 1, 1);
+    setLayout(layout);
 
-    for(int i=0; i<NumGridRows; ++i)
-    {
-        labels[i] = new QLabel(tr("Line %1:").arg(i+1));
-        lineEdits[i] = new QLineEdit;
-        layout->addWidget(labels[i], i+1, 0);
-        layout->addWidget(lineEdits[i], i+1, 1);
+    setWindowTitle(tr("Line Edits"));
+}
+
+void Dialog::echoChanged(int index)
+{
+    switch (index) {
+    case 0:
+        echoLineEdit->setEchoMode(QLineEdit::Normal);
+        break;
+    case 1:
+        echoLineEdit->setEchoMode(QLineEdit::Password);
+        break;
+    case 2:
+        echoLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+        break;
+    case 3:
+        echoLineEdit->setEchoMode(QLineEdit::NoEcho);
+        break;
+    }
+}
+
+
+void Dialog::validatorChanged(int index)
+{
+    switch (index) {
+    case 0:
+        validatorLineEdit->setValidator(nullptr);
+        break;
+    case 1:
+        validatorLineEdit->setValidator(new QIntValidator(
+            validatorLineEdit));
+        break;
+    case 2:
+        validatorLineEdit->setValidator(new QDoubleValidator(-999.0,
+            999.0, 2, validatorLineEdit));
+        break;
     }
 
-    smallEditor = new QTextEdit;
-    smallEditor->setPlainText(tr("Cool widget"));
-
-    layout->addWidget(smallEditor, 0, 2, 4, 1);
-
-    layout->setColumnStretch(1, 10);
-    layout->setColumnStretch(2, 20);
-    gridGroupBox->setLayout(layout);
+    validatorLineEdit->clear();
 }
 
-void Dialog::createFormGroupBox()
+
+void Dialog::alignmentChanged(int index)
 {
-    formGroupBox = new QGroupBox(tr("Form layout"));
-    QFormLayout *layout = new QFormLayout;
-    layout->addRow(new QLabel(tr("Line 1:")), new QLineEdit);
-    layout->addRow(new QLabel(tr("Line 2:")), new QComboBox);
-    layout->addRow(new QLabel(tr("Line 3:")), new QSpinBox);
-    formGroupBox->setLayout(layout);
+    switch (index) {
+    case 0:
+        alignmentLineEdit->setAlignment(Qt::AlignLeft);
+        break;
+    case 1:
+        alignmentLineEdit->setAlignment(Qt::AlignCenter);
+        break;
+    case 2:
+        alignmentLineEdit->setAlignment(Qt::AlignRight);
+        break;
+    }
 }
 
 
 
 
+void Dialog::inputMaskChanged(int index)
+{
+    switch (index) {
+    case 0:
+        inputMaskLineEdit->setInputMask("");
+        break;
+    case 1:
+        inputMaskLineEdit->setInputMask("+99 99 99 99 99;_");
+        break;
+    case 2:
+        inputMaskLineEdit->setInputMask("0000-00-00");
+        inputMaskLineEdit->setText("00000000");
+        inputMaskLineEdit->setCursorPosition(0);
+        break;
+    case 3:
+        inputMaskLineEdit->setInputMask(">AAAAA-AAAAA-AAAAA-AAAAA-AAAAA;#");
+        break;
+    }
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void Dialog::accessChanged(int index)
+{
+    switch (index) {
+    case 0:
+        accessLineEdit->setReadOnly(false);
+        break;
+    case 1:
+        accessLineEdit->setReadOnly(true);
+        break;
+    }
+}
 
 
 

@@ -1,47 +1,34 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
-#include <QDialog>
-#include <QMenuBar>
-#include <QGroupBox>
-#include <QTextEdit>
-#include <QLabel>
+#include <QWidget>
 #include <QLineEdit>
-#include <QPushButton>
-#include <QDialogButtonBox>
+#include <QGroupBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Dialog; }
 QT_END_NAMESPACE
 
-class Dialog : public QDialog
+class Dialog : public QWidget
 {
     Q_OBJECT
 
 public:
     Dialog(QWidget *parent = nullptr);
 
+public slots:
+    void echoChanged(int);
+    void validatorChanged(int);
+    void alignmentChanged(int);
+    void inputMaskChanged(int);
+    void accessChanged(int);
+
 private:
-    void createMenu();
-    void createHorizontalGroupBox();
-    void createGridGroupBox();
-    void createFormGroupBox();
-
-    enum { NumGridRows = 3, NumButtons = 4 };
-
-    QMenuBar *menuBar;
-    QGroupBox *horizontalGroupBox;
-    QGroupBox *gridGroupBox;
-    QGroupBox *formGroupBox;
-    QTextEdit *smallEditor;
-    QTextEdit *bigEditor;
-    QLabel *labels[NumGridRows];
-    QLineEdit *lineEdits[NumGridRows];
-    QPushButton *buttons[NumButtons];
-    QDialogButtonBox *buttonBox;
-
-    QMenu *fileMenu;
-    QAction *exitAction;
+    QLineEdit *echoLineEdit;
+    QLineEdit *validatorLineEdit;
+    QLineEdit *alignmentLineEdit;
+    QLineEdit *inputMaskLineEdit;
+    QLineEdit *accessLineEdit;
 
 };
 #endif // DIALOG_H
